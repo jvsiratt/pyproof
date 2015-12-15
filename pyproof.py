@@ -117,35 +117,35 @@ def Modus_Ponens(expression1, expression2):
 	if isinstance(expression1, conditional):
 		if expression2 == expression1[0]:
 			return expression1[1]
-		return "INVALID OPERATION: modus_ponens not applicable"
+		return "INVALID OPERATION: Modus Ponens not applicable"
 	return "INVALID OPERAND: expression1 must be conditional"
 
 def Modus_Tollens(expression1, expression2):
 	if isinstance(expression1, conditional):
 		if expression2 == negation(expression1[1]):
 			return negation(expression1[0])
-		return "INVALID OPERATION: modus_tollens not applicable"
+		return "INVALID OPERATION: Modus Tollens not applicable"
 	return "INVALID OPERAND: expression1 must be conditional"
 
 def Hypothetical_Syllogism(expression1, expression2):
 	if isinstance(expression1, conditional) and isinstance(expression2, conditional):
 		if expression2[0] ==  expression1[1]:
 			return conditional(expression1[0], expression2[1])
-		return "INVALID OPERATION: hypothetical_syllogism not applicable"
+		return "INVALID OPERATION: Hypothetical Syllogism not applicable"
 	return "INVALID OPERAND: expression1 and expression2 must be conditional"
 
 def Disjunctive_Syllogism(expression1, expression2):
 	if isinstance(expression1, disjunction) and isinstance(expression2, negation):
 		if expression2[0] == expression1[0]:
 			return expression1.contents[1]
-		return "INVALID OPERATION: disjunctive_syllogism not applicable"
+		return "INVALID OPERATION: Disjunctive Syllogism not applicable"
 	return "INVALID OPERAND: expression 1 must be disjunction and expression2 must be negation"
 
 def Constructive_Dilemma(expression1, expression2):
 	if isinstance(expression1, conjunction) and isinstance(expression1[0], conditional) and isinstance(expression1[1], conditional) and isinstance(expression2, disjunction):
 		if expression2[0] == expression1[0].contents[0] and expression2[1] == expression1[1][0]:
 			return disjunction(expression1[0][1], expression1[1][1])
-		return "INVALID OPERATION: constructive_dilemma not applicable"
+		return "INVALID OPERATION: Constructive Dilemma not applicable"
 	return "INVALID OPERAND: expression1 must be conjunction of conditionals and expression2 must be disjunction"
 
 def Simplification(expression1):
