@@ -500,3 +500,88 @@ class Proof:
 			output = str(i) + ".\t" + total_list[i-1].show() + "\t\t\t\t" + self.justifications[i-1]
 			print output
 			i += 1
+
+#experimental
+class proof_entry:
+	
+	def __init__(self):
+		self.expression = None
+		self.justification = None
+		self.recursion = None
+		self.string = self.expression.show() + "\t\t\t\t" + self.justification
+		
+	def show(self):
+		return self.string
+		
+	def __getitem__(self, index):
+		return self.expression[index]
+		
+	def __repr__(self):
+		return self.string
+		
+	def __str__(self):
+		return self.string_at
+		
+class assumption(proof_entry):
+	
+	def __init__(self, expression):
+		self.expression = expression
+		self.recursion = []
+		self.string = self.expression.show()
+		
+class theorem(proof_entry):
+	
+	def __init__(self, expression, justification):
+		self.expression = expression
+		self.justification = justification
+		self.recursion = []
+		self.string = self.expression.show() + "\t\t\t\t" + self.justification
+
+class Proof:
+	
+	def __init__(self):
+		self.entries = []
+		self.proof_goal = None
+	
+	def assume(self, expression):
+		if not isinstance(expression, logical):
+			return "INPUT ERROR: expression must be logical"
+		if len(self.entries) == 0 or isinstance(self.entries[-1], assumption):
+			self.entries.append(assumption(expression))
+			self.show()
+			return
+		else:
+			return "INPUT ERROR: unable to make further assumptions"
+
+	def goal(self, expression):
+		if not isinstance(expression, logical):
+			return "INPUT ERROR: expression must be logical"
+		self.proof_goal = expression
+		self.show()
+		return
+
+	def mp(self, index1, index2):
+		last_entry = self.entries[-1]
+		result = Modus_Ponens(self.entries[index1-1].expression, self.entries[index2-1].expression)
+		justification = "MP " + str(index1) + ", " + str(index2)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return			
+		return result
+	
+	def show(self):
+		i = 1
+		while i <= len(self.entries):
+			output = len(self.entries[i-1].recursion)*"|" + str(i) + ".\t" + self.entries[i-1].show()
+			if isinstance(self.entries[i-1], assumption) and (i == len(self.entries) or isinstance(self.entries[i], theorem)):
+				if isinstance(self.proof_goal, logical):
+					output = output + "\t\t/" + self.proof_goal.show()
+			if isinstance(self.entries[i-2], assumption) and isinstance(self.entries[i-1], theorem):
+				print(30*"=")
+			print output
+			if self.entries[i-1].expression == self.proof_goal and len(self.entries[i-1].recursion) == 0:
+				print("QED")
+			i += 1
