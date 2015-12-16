@@ -20,22 +20,22 @@ class logical:
 	def __and__(self, other):
 		if isinstance(other, logical):
 			return conjunction(self, other)
-		return "INVALID OPERATION: expression2 must be logical"
+		return "INVALID INPUT: expression2 must be logical"
 		
 	def __or__(self, other):
 		if isinstance(other, logical):
 			return disjunction(self, other)
-		return "INVALID OPERATION: expression2 must be logical"
+		return "INVALID INPUT: expression2 must be logical"
 		
 	def __rshift__(self, other):
 		if isinstance(other, logical):
 			return conditional(self, other)
-		return "INVALID OPERATION: expression2 must be logical"
+		return "INVALID INPUT: expression2 must be logical"
 		
 	def __pow__(self, other):
 		if isinstance(other, logical):
 			return biconditional(self, other)
-		return "INVALID OPERATION: expression2 must me logical"
+		return "INVALID INPUT: expression2 must me logical"
 		
 	def __getitem__(self, index):
 		return self.contents[index]
@@ -118,40 +118,40 @@ def Modus_Ponens(expression1, expression2):
 		if expression2 == expression1[0]:
 			return expression1[1]
 		return "INVALID OPERATION: Modus Ponens not applicable"
-	return "INVALID OPERAND: expression1 must be conditional"
+	return "INVALID INPUT: expression1 must be conditional"
 
 def Modus_Tollens(expression1, expression2):
 	if isinstance(expression1, conditional):
 		if expression2 == negation(expression1[1]):
 			return negation(expression1[0])
 		return "INVALID OPERATION: Modus Tollens not applicable"
-	return "INVALID OPERAND: expression1 must be conditional"
+	return "INVALID INPUT: expression1 must be conditional"
 
 def Hypothetical_Syllogism(expression1, expression2):
 	if isinstance(expression1, conditional) and isinstance(expression2, conditional):
 		if expression2[0] ==  expression1[1]:
 			return conditional(expression1[0], expression2[1])
 		return "INVALID OPERATION: Hypothetical Syllogism not applicable"
-	return "INVALID OPERAND: expression1 and expression2 must be conditional"
+	return "INVALID INPUT: expression1 and expression2 must be conditional"
 
 def Disjunctive_Syllogism(expression1, expression2):
 	if isinstance(expression1, disjunction) and isinstance(expression2, negation):
 		if expression2[0] == expression1[0]:
 			return expression1.contents[1]
 		return "INVALID OPERATION: Disjunctive Syllogism not applicable"
-	return "INVALID OPERAND: expression 1 must be disjunction and expression2 must be negation"
+	return "INVALID INPUT: expression 1 must be disjunction and expression2 must be negation"
 
 def Constructive_Dilemma(expression1, expression2):
 	if isinstance(expression1, conjunction) and isinstance(expression1[0], conditional) and isinstance(expression1[1], conditional) and isinstance(expression2, disjunction):
 		if expression2[0] == expression1[0].contents[0] and expression2[1] == expression1[1][0]:
 			return disjunction(expression1[0][1], expression1[1][1])
 		return "INVALID OPERATION: Constructive Dilemma not applicable"
-	return "INVALID OPERAND: expression1 must be conjunction of conditionals and expression2 must be disjunction"
+	return "INVALID INPUT: expression1 must be conjunction of conditionals and expression2 must be disjunction"
 
 def Simplification(expression1):
 	if isinstance(expression1, conjunction):
 		return expression1[0]
-	return "INVALID OPERAND: expression must be conjunction"
+	return "INVALID INPUT: expression must be conjunction"
 
 def Conjunction(expression1, expression2):
 	return conjunction(expression1, expression2)
@@ -338,17 +338,17 @@ class Proof:
 	
 	def assume(self, expression):
 		if not isinstance(expression, logical):
-			return "INPUT ERROR: expression must be logical"
+			return "INVALID INPUT: expression must be logical"
 		if len(self.entries) == 0 or isinstance(self.entries[-1], assumption):
 			self.entries.append(assumption(expression))
 			self.show()
 			return
 		else:
-			return "INPUT ERROR: unable to make further assumptions"
+			return "INVALID OPERATION: unable to make further assumptions"
 
 	def goal(self, expression):
 		if not isinstance(expression, logical):
-			return "INPUT ERROR: expression must be logical"
+			return "INVALID INPUT: expression must be logical"
 		self.proof_goal = expression
 		self.show()
 		return
@@ -373,126 +373,126 @@ class Proof:
 
 	def mp(self, index1, index2):
 		if self.scope_test(index1, index2) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Modus_Ponens(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "MP " + str(index1) + ", " + str(index2)
 		return self.update(result, justification)
 			
 	def mt(self, index1, index2):
 		if self.scope_test(index1, index2) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Modus_Tollens(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "MT " + str(index1) + ", " + str(index2)
 		return self.update(result, justification)
 		
 	def hs(self, index1, index2):
 		if self.scope_test(index1, index2) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Hypothetical_Syllogism(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "HS " + str(index1) + ", " + str(index2)
 		return self.update(result, justification)
 
 	def ds(self, index1, index2):
 		if self.scope_test(index1, index2) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Disjunctive_Syllogism(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "DS " + str(index1) + ", " + str(index2)
 		return self.update(result, justification)
 		
 	def cd(self, index1, index2):
 		if self.scope_test(index1, index2) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Constructive_Dilemma(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "CD " + str(index1) + ", " + str(index2)
 		return self.update(result, justification)
 
 	def simp(self, index1):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Simplification(self.entries[index1-1].expression)
 		justification = "Simp " + str(index1)
 		return self.update(result, justification)
 
 	def conj(self, index1, index2):
 		if self.scope_test(index1, index2) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Conjunction(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "Conj " + str(index1) + ", " + str(index2)
 		return self.update(result, justification)
 
 	def add(self, index1, expression1):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Addition(self.entries[index1-1].expression, expression1)
 		justification = "Add " + str(index1)
 		return self.update(result, justification)
 
 	def dm(self, index1):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = DeMorgan(self.entries[index1-1].expression)
 		justification = "DM " + str(index1)
 		return self.update(result, justification)
 
 	def com(self, index1):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Commutation(self.entries[index1-1].expression)
 		justification = "Com " + str(index1)
 		return self.update(result, justification)
 		
 	def assoc(self, index1, case = 0):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Association(self.entries[index1-1].expression, case)
 		justification = "Assoc " + str(index1)
 		return self.update(result, justification)
 
 	def dist(self, index1, case = 0):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Distribution(self.entries[index1-1].expression, case)
 		justification = "Dist " + str(index1)
 		return self.update(result, justification)
 
 	def dn(self, index1, case = 0):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Double_Negation(self.entries[index1-1].expression, case)
 		justification = "DN " + str(index1)
 		return self.update(result, justification)
 
 	def trans(self, index1, case = 0):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Transposition(self.entries[index1-1].expression, case)
 		justification = "Trans " + str(index1)
 		return self.update(result, justification)
 
 	def impl(self, index1):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Material_Implication(self.entries[index1-1].expression)
 		justification = "Impl " + str(index1)
 		return self.update(result, justification)
 
 	def equiv(self, index1, case = 0):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Material_Equivalence(self.entries[index1-1].expression, case)
 		justification = "Equiv " + str(index1)
 		return self.update(result, justification)
 
 	def exp(self, index1):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Exportation(self.entries[index1-1].expression)
 		justification = "Exp " + str(index1)
 		return self.update(result, justification)
 
 	def taut(self, index1, case = 0):
 		if self.scope_test(index1, index1) == False:
-			return "ERROR: out of scope"
+			return "INVALID OPERATION: out of scope"
 		result = Tautology(self.entries[index1-1].expression, case)
 		justification = "Taut " + str(index1)
 		return self.update(result, justification)
@@ -523,7 +523,7 @@ class Proof:
 	def discharge(self):
 		last_entry = self.entries[-1]
 		if len(last_entry.recursion) == 0:
-			return "INVALID COMMAND: nothing to discharge"
+			return "INVALID OPERATION: nothing to discharge"
 		if last_entry.recursion[-1] == "c":
 			i = 2
 			while len(self.entries[-i].recursion) >= len(last_entry.recursion):
@@ -550,14 +550,14 @@ class Proof:
 				self.entries.append(new_entry)
 				self.show()
 				return
-		return "INVALID COMMAND: unable to discharge"
+		return "INVALID OPERATION: unable to discharge"
 		
 	def remove(self):
 		if len(self.entries) > 0:
 			del self.entries[-1]
 			self.show()
 			return
-		return "Nothing to remove"
+		return "INVALID OPERATION: nothing to remove"
 	
 	def show(self):
 		i = 1
