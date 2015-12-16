@@ -634,6 +634,13 @@ class Proof:
 				self.show()
 				return
 		return "INVALID COMMAND: unable to discharge"
+		
+	def remove(self):
+		if len(self.entries) > 0:
+			del self.entries[-1]
+			self.show()
+			return
+		return "Nothing to remove"
 	
 	def show(self):
 		i = 1
