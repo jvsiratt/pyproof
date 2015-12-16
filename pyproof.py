@@ -1,10 +1,11 @@
-"""	pyproof v.0.19
-	proof helper
-	currently implemented: first order logic without conditional or indirect proof
+"""	pyproof v.0.20 proof helper
+	currently implemented: propositional logic with conditional and indirect proofing
 	John V Siratt
+	reference: _INTRO TO LOGIC_, Baronett, 2ed
 """
 
-#parent class for logical connectives
+"""implementation of logical objects"""
+#parent class for logical objects
 class logical:
 	
 	left_delimiter = "("
@@ -13,33 +14,40 @@ class logical:
 	def __init__(self):
 		self.string = ''
 		self.contents = []
-	
+		
+	#overloading the ~ operator to perform negation
 	def __invert__(self):
 		return negation(self)
 		
+	#overloading the & operator to perform conjunciton
 	def __and__(self, other):
 		if isinstance(other, logical):
 			return conjunction(self, other)
 		return "INVALID INPUT: expression2 must be logical"
 		
+	#overloading the | operator to perform disjunction
 	def __or__(self, other):
 		if isinstance(other, logical):
 			return disjunction(self, other)
 		return "INVALID INPUT: expression2 must be logical"
 		
+	#overloading the >> operator to perform conditional
 	def __rshift__(self, other):
 		if isinstance(other, logical):
 			return conditional(self, other)
 		return "INVALID INPUT: expression2 must be logical"
 		
+	#overloading the ** operator to perform material equivalence
 	def __pow__(self, other):
 		if isinstance(other, logical):
 			return biconditional(self, other)
 		return "INVALID INPUT: expression2 must me logical"
 		
+	#indexing returns entries in contents variable
 	def __getitem__(self, index):
 		return self.contents[index]
 		
+	#comparison compares string identifiers
 	def __eq__(self, other):
 		if isinstance(other, logical):
 			return self.string == other.string
@@ -53,7 +61,8 @@ class logical:
 		
 	def show(self):
 		return self.string
- 
+
+#atomic object is a logical constant
 class atom(logical):
 	
 	def __init__(self, label):
@@ -62,6 +71,7 @@ class atom(logical):
 		else:
 			return "INVALID INPUT: label must be string"
 
+#unary connective NOT
 class negation(logical):
 	
 	def __init__(self, expression1):
@@ -72,6 +82,7 @@ class negation(logical):
 		else:
 			return "INVALID INPUT: expression must be logical"
 
+#binary connective AND
 class conjunction(logical):
 	
 	def __init__(self, expression1, expression2):
@@ -81,7 +92,8 @@ class conjunction(logical):
 			self.string = self.left_delimiter + self[0].show() + self.infix + self[1].show() + self.right_delimiter
 		else:
 			return "INVALID INPUT: expressions must be logical"
-	
+
+#binary connective OR
 class disjunction(logical):
 	
 	def __init__(self, expression1, expression2):
@@ -91,7 +103,8 @@ class disjunction(logical):
 			self.string = self.left_delimiter + self[0].show() + self.infix + self[1].show() + self.right_delimiter
 		else:
 			return "INVALID INPUT: expressions must be logical"
-	
+
+#binary connective IF-THEN
 class conditional(logical):
 	
 	def __init__(self, expression1, expression2):
@@ -102,6 +115,7 @@ class conditional(logical):
 		else:
 			return "INVALID INPUT: expressions must be logical"
 
+#binary connective IFF
 class biconditional(logical):
 	
 	def __init__(self, expression1, expression2):
@@ -112,7 +126,8 @@ class biconditional(logical):
 		else:
 			return "INVALID INPUT: expressions must be logical"
 
-#implementation of implication rules
+"""implementation of implication rules"""
+#If A&B and A, then B
 def Modus_Ponens(expression1, expression2):
 	if isinstance(expression1, conditional):
 		if expression2 == expression1[0]:
@@ -120,6 +135,7 @@ def Modus_Ponens(expression1, expression2):
 		return "INVALID OPERATION: Modus Ponens not applicable"
 	return "INVALID INPUT: expression1 must be conditional"
 
+#If A&B and ~B, then ~A
 def Modus_Tollens(expression1, expression2):
 	if isinstance(expression1, conditional):
 		if expression2 == negation(expression1[1]):
@@ -127,6 +143,7 @@ def Modus_Tollens(expression1, expression2):
 		return "INVALID OPERATION: Modus Tollens not applicable"
 	return "INVALID INPUT: expression1 must be conditional"
 
+#If A>>B and B>>C, then A>>C
 def Hypothetical_Syllogism(expression1, expression2):
 	if isinstance(expression1, conditional) and isinstance(expression2, conditional):
 		if expression2[0] ==  expression1[1]:
@@ -134,6 +151,7 @@ def Hypothetical_Syllogism(expression1, expression2):
 		return "INVALID OPERATION: Hypothetical Syllogism not applicable"
 	return "INVALID INPUT: expression1 and expression2 must be conditional"
 
+#If A|B and ~A, then B
 def Disjunctive_Syllogism(expression1, expression2):
 	if isinstance(expression1, disjunction) and isinstance(expression2, negation):
 		if expression2[0] == expression1[0]:
@@ -141,6 +159,7 @@ def Disjunctive_Syllogism(expression1, expression2):
 		return "INVALID OPERATION: Disjunctive Syllogism not applicable"
 	return "INVALID INPUT: expression 1 must be disjunction and expression2 must be negation"
 
+#If (A>>B)&(C>>D) and A|C, then B|D
 def Constructive_Dilemma(expression1, expression2):
 	if isinstance(expression1, conjunction) and isinstance(expression1[0], conditional) and isinstance(expression1[1], conditional) and isinstance(expression2, disjunction):
 		if expression2[0] == expression1[0].contents[0] and expression2[1] == expression1[1][0]:
@@ -148,19 +167,23 @@ def Constructive_Dilemma(expression1, expression2):
 		return "INVALID OPERATION: Constructive Dilemma not applicable"
 	return "INVALID INPUT: expression1 must be conjunction of conditionals and expression2 must be disjunction"
 
+#If A&B then A
 def Simplification(expression1):
 	if isinstance(expression1, conjunction):
 		return expression1[0]
 	return "INVALID INPUT: expression must be conjunction"
 
+#If A and B, then A&B
 def Conjunction(expression1, expression2):
 	return conjunction(expression1, expression2)
 
+#If A, then A|X
 def Addition(expression1, expression2):
 	return disjunction(expression1, expression2)
 
 
-#implementation of replacement rules
+"""implementation of replacement rules"""
+#distribution of negation over conjunction and disjunction
 def DeMorgan(expression1):
 	if isinstance(expression1, negation) and isinstance(expression1[0], conjunction):
 		return disjunction(negation(expression1[0][0]), negation(expression1[0][1]))
@@ -171,14 +194,16 @@ def DeMorgan(expression1):
 	elif isinstance(expression1, conjunction) and isinstance(expression1[0], negation) and isinstance(expression1[1], negation):
 		return negation(disjunction(expression1[0][0], expression1[1][0]))
 	return "INVALID OPERATION: DeMorgan does not apply"
-	
+
+#commutivity of conjunction and disjunction
 def Commutation(expression1):
 	if isinstance(expression1, disjunction):
 		return disjunction(expression1[1], expression1[0])
 	elif isinstance(expression1, conjunction):
 		return conjunction(expression1[1], expression1[0])
 	return "INVALID OPERATION: Commutation does not apply"
-	
+
+#associativity of conjunction and disjunction
 def Association(expression1, case = 0):
 	if case == 1:
 		if isinstance(expression1, disjunction) and isinstance(expression1[1], disjunction):
@@ -196,6 +221,7 @@ def Association(expression1, case = 0):
 		print("1.\tp * (q * r) => (p * q) * r\n2.\t(p * q) * r => p * (q * r)\n")
 		return "INVALID INPUT: must select case"
 	
+#distribution of conjunction and disjunction
 def Distribution(expression1, case = 0):
 	if case == 1:
 		if isinstance(expression1, conjunction) and isinstance(expression1[1], disjunction):
@@ -213,6 +239,7 @@ def Distribution(expression1, case = 0):
 		print("1.\tp * (q x r) => (p * q) x (p * r)\n2.\t(p * q) x (p * r) => p * (q x r)\n")
 		return "INVALID INPUT: must select case"	
 
+#If A iff ~~A
 def Double_Negation(expression1, case = 0):
 	if case == 1:
 		return negation(negation(expression1))
@@ -223,7 +250,8 @@ def Double_Negation(expression1, case = 0):
 	else:
 		print("1.\tp => ~~p\n2.\t~~p => p\n")	
 		return "INVALID INPUT: must select case"	
-		
+
+#If A>>B, then ~B>>~A
 def Transposition(expression1, case = 0):
 	if case == 1:
 		if isinstance(expression1, conditional) and isinstance(expression1[0], negation) and isinstance(expression1[1], negation):
@@ -236,7 +264,8 @@ def Transposition(expression1, case = 0):
 	else:
 		print("1.\t(p >> q) => (~q >> ~p)\n2.\t(~q >> ~p) => (p >> q)\n")
 		return "INVALID INPUT: must select case"
-	
+
+#If A>>B, then ~A|B
 def Material_Implication(expression1):
 	if isinstance(expression1, conditional):
 		return disjunction(negation(expression1[0]), expression1[1])
@@ -244,6 +273,7 @@ def Material_Implication(expression1):
 		return conditional(expression1[0][0], expression1[1])
 	return "INVALID OPERATION: Material Implication does not apply"
 
+#If A**B, then (A>>B)&(A>>B) and (A&B)|(~A&~B)
 def Material_Equivalence(expression1, case = 0):
 	if case == 1:
 		if isinstance(expression1, biconditional):
@@ -266,6 +296,7 @@ def Material_Equivalence(expression1, case = 0):
 		return "INVALID INPUT: must choose case"
 		
 '''may run into double negation problem'''
+#If (A&B)>>C, then A>>(B>>C)
 def Exportation(expression1):
 	if isinstance(expression1, conditional) and isinstance(expression1[0], conjunction):
 		return conditional(expression1[0][0], conditional(expression1[0][1], expression1[1]))
@@ -273,6 +304,7 @@ def Exportation(expression1):
 		return conditional(conjunction(expression1[0], expression1[1].contents[0]), expression1[1][1])
 	return "INVALID OPERATION: Exportation does not apply"
 
+#If A, then A|A and A&A
 def Tautology(expression1, case = 0):
 	if case == 1:
 		return disjunction(expression1, expression1)
@@ -286,7 +318,8 @@ def Tautology(expression1, case = 0):
 		print("1,\tp => (p | p)\n2.\tp => (p & p)\n3.\t(p * p) => p\n")
 		return "INVALID INPUT: must choose case"
 
-#proof object to wrap everything
+"""implementation of proof object"""
+#helper function for conditional proofing, determines if a contradiction has been reached
 def iscontradiction(expression):
 	if isinstance(expression, conjunction):
 		if isinstance(expression[0], negation) and expression[0][0] == expression[1]:
@@ -294,7 +327,8 @@ def iscontradiction(expression):
 		if isinstance(expression[1], negation) and expression[0] == expression[1][0]:
 			return True
 	return False
-		
+
+#modular container parent class for a line of proof information
 class proof_entry:
 	
 	def __init__(self):
@@ -314,14 +348,16 @@ class proof_entry:
 		
 	def __str__(self):
 		return self.string_at
-		
+
+#entry containing a declared given
 class assumption(proof_entry):
 	
 	def __init__(self, expression):
 		self.expression = expression
 		self.recursion = []
 		self.string = self.expression.show()
-		
+	
+#entry containing a derived truth	
 class theorem(proof_entry):
 	
 	def __init__(self, expression, justification):
@@ -330,6 +366,7 @@ class theorem(proof_entry):
 		self.recursion = []
 		self.string = self.expression.show() + "\t\t\t\t" + self.justification
 
+#proof container class, includes methods to interface with implication and replacement rules
 class Proof:
 	
 	def __init__(self):
