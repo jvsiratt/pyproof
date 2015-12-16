@@ -1,4 +1,4 @@
-"""	pyproof v.0.11
+"""	pyproof v.0.19
 	proof helper
 	currently implemented: first order logic without conditional or indirect proof
 	John V Siratt
@@ -578,6 +578,210 @@ class Proof:
 			self.entries.append(new_entry)
 			self.show()
 			return			
+		return result
+		
+	def mt(self, index1, index2):
+		last_entry = self.entries[-1]
+		result = Modus_Tollens(self.entries[index1-1].expression, self.entries[index2-1].expression)
+		justification = "MT " + str(index1) + ", " + str(index2)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+		
+	def hs(self, index1, index2):
+		last_entry = self.entries[-1]
+		result = Hypothetical_Syllogism(self.entries[index1-1].expression, self.entries[index2-1].expression)
+		justification = "HS " + str(index1) + ", " + str(index2)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def ds(self, index1, index2):
+		last_entry = self.entries[-1]
+		result = Disjunctive_Syllogism(self.entries[index1-1].expression, self.entries[index2-1].expression)
+		justification = "DS " + str(index1) + ", " + str(index2)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def cd(self, index1, index2):
+		last_entry = self.entries[-1]
+		result = Constructive_Dilemma(self.entries[index1-1].expression, self.entries[index2-1].expression)
+		justification = "CD " + str(index1) + ", " + str(index2)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def simp(self, index1):
+		last_entry = self.entries[-1]
+		result = Simplification(self.entries[index1-1].expression)
+		justification = "Simp " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def conj(self, index1, index2):
+		last_entry = self.entries[-1]
+		result = Conjunction(self.entries[index1-1].expression, self.entries[index2-1].expression)
+		justification = "Conj " + str(index1) + ", " + str(index2)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def add(self, index1, expression1):
+		last_entry = self.entries[-1]
+		result = Addition(self.entries[index1-1].expression, expression1)
+		justification = "Add " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def dm(self, index1):
+		last_entry = self.entries[-1]
+		result = DeMorgan(self.entries[index1-1].expression)
+		justification = "DM " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def com(self, index1):
+		last_entry = self.entries[-1]
+		result = Commutation(self.entries[index1-1].expression)
+		justification = "Com " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+		
+	def assoc(self, index1, case = 0):
+		last_entry = self.entries[-1]
+		result = Association(self.entries[index1-1].expression, case)
+		justification = "Assoc " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def dist(self, index1, case = 0):
+		last_entry = self.entries[-1]
+		result = Distribution(self.entries[index1-1].expression, case)
+		justification = "Dist " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def dn(self, index1, case = 0):
+		last_entry = self.entries[-1]
+		result = Double_Negation(self.entries[index1-1].expression, case)
+		justification = "DN " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def trans(self, index1, case = 0):
+		last_entry = self.entries[-1]
+		result = Transposition(self.entries[index1-1].expression, case)
+		justification = "Trans " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def impl(self, index1):
+		last_entry = self.entries[-1]
+		result = Material_Implication(self.entries[index1-1].expression)
+		justification = "Impl " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def equiv(self, index1, case = 0):
+		last_entry = self.entries[-1]
+		result = Material_Equivalence(self.entries[index1-1].expression, case)
+		justification = "Equiv " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def exp(self, index1):
+		last_entry = self.entries[-1]
+		result = Exportation(self.entries[index1-1].expression)
+		justification = "Exp " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+
+	def taut(self, index1, case = 0):
+		last_entry = self.entries[-1]
+		result = Tautology(self.entries[index1-1].expression, case)
+		justification = "Taut " + str(index1)
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
 		return result
 		
 	def cp(self, expression):
