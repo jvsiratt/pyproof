@@ -287,221 +287,6 @@ def Tautology(expression1, case = 0):
 		return "INVALID INPUT: must choose case"
 
 #proof object to wrap everything
-class Proof:
-	
-	def __init__(self):
-		self.assumptions = []
-		self.theorems = []
-		self.justifications = []
-		
-	def assume(self, expression):
-		self.assumptions.append(expression)
-		self.justifications.append("")
-		self.show()
-		
-	def mp(self, index1, index2):
-		total_list = self.assumptions + self.theorems
-		temp = Modus_Ponens(total_list[index1-1], total_list[index2-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("MP " + str(index1) + ", " + str(index2))
-			self.show()
-			return
-		return temp
-		
-	def mt(self, index1, index2):
-		total_list = self.assumptions + self.theorems
-		temp = Modus_Tollens(total_list[index1-1], total_list[index2-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("MT " + str(index1) + ", " + str(index2))
-			self.show()
-			return
-		return temp
-		
-	def hs(self, index1, index2):
-		total_list = self.assumptions + self.theorems
-		temp = Hypothetical_Syllogism(total_list[index1-1], total_list[index2-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("HS " + str(index1) + ", " + str(index2))
-			self.show()
-			return
-		return temp
-		
-	def ds(self, index1, index2):
-		total_list = self.assumptions + self.theorems
-		temp = Disjunctive_Syllogism(total_list[index1-1], total_list[index2-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("DS " + str(index1) + ", " + str(index2))
-			self.show()
-			return
-		return temp
-		
-	def cd(self, index1, index2):
-		total_list = self.assumptions + self.theorems
-		temp = Constructive_Dilemma(total_list[index1-1], total_list[index2-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("CD " + str(index1) + ", " + str(index2))
-			self.show()
-			return
-		return temp
-		
-	def simp(self, index1):
-		total_list = self.assumptions + self.theorems
-		temp = Simplification(total_list[index1-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Simp " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def conj(self, index1, index2):
-		total_list = self.assumptions + self.theorems
-		temp = Conjunction(total_list[index1-1], total_list[index2-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Conj " + str(index1) + ", " + str(index2))
-			self.show()
-			return
-		return temp
-		
-	def add(self, index1, expression1):
-		total_list = self.assumptions + self.theorems
-		temp = Addition(total_list[index1-1], expression1)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Add " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def dm(self, index1):
-		total_list = self.assumptions + self.theorems
-		temp = DeMorgan(total_list[index1-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("DM " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def com(self, index1):
-		total_list = self.assumptions + self.theorems
-		temp = Commutation(total_list[index1-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Com " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def assoc(self, index1, case = 0):
-		total_list = self.assumptions + self.theorems
-		temp = Association(total_list[index1-1], case)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Assoc " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def dist(self, index1, case = 0):
-		total_list = self.assumptions + self.theorems
-		temp = Distribution(total_list[index1-1], case)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Dist " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def dn(self, index1, case = 0):
-		total_list = self.assumptions + self.theorems
-		temp = Double_Negation(total_list[index1-1], case)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("DN " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def trans(self, index1, case = 0):
-		total_list = self.assumptions + self.theorems
-		temp = Transposition(total_list[index1-1], case)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Trans " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def impl(self, index1):
-		total_list = self.assumptions + self.theorems
-		temp = Material_Implication(total_list[index1-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Impl " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def equiv(self, index1, case = 0):
-		total_list = self.assumptions + self.theorems
-		temp = Material_Equivalence(total_list[index1-1], case)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Equiv " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def exp(self, index1):
-		total_list = self.assumptions + self.theorems
-		temp = Exportation(total_list[index1-1])
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Exp " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def taut(self, index1, case = 0):
-		total_list = self.assumptions + self.theorems
-		temp = Tautology(total_list[index1-1], case)
-		if isinstance(temp, logical):
-			self.theorems.append(temp)
-			self.justifications.append("Taut " + str(index1))
-			self.show()
-			return
-		return temp
-		
-	def remove(self):
-		if len(self.theorems) > 0:
-			del self.theorems[-1]
-			del self.justifications[-1]
-			self.show()
-			return
-		elif len(self.assumptions) > 0:
-			del self.assumptions[-1]
-			del self.justifications[-1]
-			self.show()
-			return
-		print("Nothing to remove")
-		return
-		
-	def show(self):
-		i = 1
-		total_list = self.assumptions + self.theorems
-		while i <= (len(total_list)):
-			output = str(i) + ".\t" + total_list[i-1].show() + "\t\t\t\t" + self.justifications[i-1]
-			print output
-			i += 1
-
-#experimental
 def iscontradiction(expression):
 	if isinstance(expression, conjunction):
 		if isinstance(expression[0], negation) and expression[0][0] == expression[1]:
@@ -568,221 +353,149 @@ class Proof:
 		self.show()
 		return
 
-	def mp(self, index1, index2):
+	def update(self, result, justification):
 		last_entry = self.entries[-1]
+		if isinstance(result, logical):
+			new_entry = theorem(result, justification)
+			new_entry.recursion = last_entry.recursion
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return result
+			
+	def scope_test(self, index1, index2):
+		current_scope = len(self.entries[-1].recursion)
+		called_scope1 = len(self.entries[index1-1].recursion)
+		called_scope2 = len(self.entries[index2-1].recursion)
+		if called_scope1 >> current_scope or called_scope2 >> current_scope:
+			return False
+		return True
+
+	def mp(self, index1, index2):
+		if self.scope_test(index1, index2) == False:
+			return "ERROR: out of scope"
 		result = Modus_Ponens(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "MP " + str(index1) + ", " + str(index2)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return			
-		return result
-		
+		return self.update(result, justification)
+			
 	def mt(self, index1, index2):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index2) == False:
+			return "ERROR: out of scope"
 		result = Modus_Tollens(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "MT " + str(index1) + ", " + str(index2)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 		
 	def hs(self, index1, index2):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index2) == False:
+			return "ERROR: out of scope"
 		result = Hypothetical_Syllogism(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "HS " + str(index1) + ", " + str(index2)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def ds(self, index1, index2):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index2) == False:
+			return "ERROR: out of scope"
 		result = Disjunctive_Syllogism(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "DS " + str(index1) + ", " + str(index2)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
-
+		return self.update(result, justification)
+		
 	def cd(self, index1, index2):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index2) == False:
+			return "ERROR: out of scope"
 		result = Constructive_Dilemma(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "CD " + str(index1) + ", " + str(index2)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def simp(self, index1):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Simplification(self.entries[index1-1].expression)
 		justification = "Simp " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def conj(self, index1, index2):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index2) == False:
+			return "ERROR: out of scope"
 		result = Conjunction(self.entries[index1-1].expression, self.entries[index2-1].expression)
 		justification = "Conj " + str(index1) + ", " + str(index2)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def add(self, index1, expression1):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Addition(self.entries[index1-1].expression, expression1)
 		justification = "Add " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def dm(self, index1):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = DeMorgan(self.entries[index1-1].expression)
 		justification = "DM " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def com(self, index1):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Commutation(self.entries[index1-1].expression)
 		justification = "Com " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 		
 	def assoc(self, index1, case = 0):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Association(self.entries[index1-1].expression, case)
 		justification = "Assoc " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def dist(self, index1, case = 0):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Distribution(self.entries[index1-1].expression, case)
 		justification = "Dist " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def dn(self, index1, case = 0):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Double_Negation(self.entries[index1-1].expression, case)
 		justification = "DN " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def trans(self, index1, case = 0):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Transposition(self.entries[index1-1].expression, case)
 		justification = "Trans " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def impl(self, index1):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Material_Implication(self.entries[index1-1].expression)
 		justification = "Impl " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def equiv(self, index1, case = 0):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Material_Equivalence(self.entries[index1-1].expression, case)
 		justification = "Equiv " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def exp(self, index1):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Exportation(self.entries[index1-1].expression)
 		justification = "Exp " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 
 	def taut(self, index1, case = 0):
-		last_entry = self.entries[-1]
+		if self.scope_test(index1, index1) == False:
+			return "ERROR: out of scope"
 		result = Tautology(self.entries[index1-1].expression, case)
 		justification = "Taut " + str(index1)
-		if isinstance(result, logical):
-			new_entry = theorem(result, justification)
-			new_entry.recursion = last_entry.recursion
-			self.entries.append(new_entry)
-			self.show()
-			return
-		return result
+		return self.update(result, justification)
 		
 	def cp(self, expression):
 		if isinstance(expression, logical):
