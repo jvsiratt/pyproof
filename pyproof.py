@@ -502,6 +502,14 @@ class Proof:
 			i += 1
 
 #experimental
+def iscontradiction(expression):
+	if isinstance(expression, conjunction):
+		if isinstance(expression[0], negation) and expression[0][0] == expression[1]:
+			return True
+		if isinstance(expression[1], negation) and expression[0] == expression[1][0]:
+			return True
+	return False
+		
 class proof_entry:
 	
 	def __init__(self):
@@ -583,25 +591,48 @@ class Proof:
 			return
 		return "INVALID INPUT: expression must be logical"
 		
+	def ip(self, expression):
+		if isinstance(expression, logical):
+			last_entry = self.entries[-1]
+			justification = "Assumption (IP)"
+			new_entry = theorem(expression, justification)
+			new_entry.recursion = last_entry.recursion + ["i"]
+			self.entries.append(new_entry)
+			self.show()
+			return
+		return "INVALID INPUT: expression must be logical"
+
+		
 	def discharge(self):
 		last_entry = self.entries[-1]
 		if len(last_entry.recursion) == 0:
 			return "INVALID COMMAND: nothing to discharge"
 		if last_entry.recursion[-1] == "c":
 			i = 2
-			while len(self.entries[-i].recursion) == len(last_entry.recursion):
+			while len(self.entries[-i].recursion) >= len(last_entry.recursion):
 				i +=1
 			antecedent = self.entries[1-i].expression
 			consequent = last_entry.expression
 			result = conditional(antecedent, consequent)
-			justification = "CP " + str(len(self.entries)-i+1) + " - " + str(len(self.entries))
+			justification = "CP " + str(len(self.entries)-i+2) + " - " + str(len(self.entries))
 			new_entry = theorem(result, justification)
 			new_entry.recursion = last_entry.recursion[0:-1]
 			self.entries.append(new_entry)
 			self.show()
 			return
 		if last_entry.recursion[-1] == "i":
-			return "Not yet implemented"
+			if iscontradiction(last_entry.expression):
+				i = 2
+				while len(self.entries[-i].recursion) == len(last_entry.recursion):
+					i +=1
+				assumpt = self.entries[1-i].expression
+				result = negation(assumpt)
+				justification = "IP " + str(len(self.entries)-i+2) + " - " + str(len(self.entries))
+				new_entry = theorem(result, justification)
+				new_entry.recursion = last_entry.recursion[0:-1]
+				self.entries.append(new_entry)
+				self.show()
+				return
 		return "INVALID COMMAND: unable to discharge"
 	
 	def show(self):
