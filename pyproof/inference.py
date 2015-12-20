@@ -50,15 +50,19 @@ def Simplification(expression1):
 
 #If A and B, then A&B
 def Conjunction(expression1, expression2):
-	return conjunction(expression1, expression2)
+	if isinstance(expression1, logical) and isinstance(expression2, logical):
+		return conjunction(expression1, expression2)
+	return "INVALID INPUT: expressions must be logical"
 
 #If A, then A|X
 def Addition(expression1, expression2):
-	return disjunction(expression1, expression2)
-
-
+	if isinstance(expression2, logical) and isinstance(expression1, logical):
+		return disjunction(expression1, expression2)
+	return "INVALID INPUT: expressions must be logical"
+	
 """implementation of replacement rules"""
 #distribution of negation over conjunction and disjunction
+#unable to distribute over conditional, such as (~(Q>>Q))
 def DeMorgan(expression1):
 	if isinstance(expression1, negation) and isinstance(expression1[0], conjunction):
 		return disjunction(negation(expression1[0][0]), negation(expression1[0][1]))
@@ -141,6 +145,7 @@ def Transposition(expression1, case = 0):
 		return "INVALID INPUT: must select case"
 
 #If A>>B, then ~A|B
+#unable to work with negation conditionals such as (~(Q>>Q))
 def Material_Implication(expression1):
 	if isinstance(expression1, conditional):
 		return disjunction(negation(expression1[0]), expression1[1])

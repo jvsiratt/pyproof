@@ -87,8 +87,17 @@ class Proof:
 		current_scope = len(self.entries[-1].recursion)
 		called_scope1 = len(self.entries[index1-1].recursion)
 		called_scope2 = len(self.entries[index2-1].recursion)
-		if called_scope1 >> current_scope or called_scope2 >> current_scope:
+		if called_scope1 > current_scope or called_scope2 > current_scope:
 			return False
+		if index1 > index2:
+			a = index2
+			b = index1
+		else:
+			a = index1
+			b = index2
+		for i in range(a+1, b):
+			if len(self.entries[i].recursion) < current_scope:
+				return False
 		return True
 
 	def mp(self, index1, index2):
@@ -227,7 +236,8 @@ class Proof:
 			self.show()
 			return
 		return "INVALID INPUT: expression must be logical"
-		
+	
+	#unable to recognize (~(Q>>Q)) as contradiction	
 	def ip(self, expression):
 		if isinstance(expression, logical):
 			last_entry = self.entries[-1]
