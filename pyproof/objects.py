@@ -68,18 +68,6 @@ class atom(logical):
 		else:
 			return "INVALID INPUT: label must be string"
 
-#constanct object
-class constant(atom):
-	pass
-
-#variables assumed to have some quality
-class constrained_variable(atom):
-	pass
-	
-#completely arbitrary variables, typically from Universial Instantiation
-class arbitrary_variable(atom):
-	pass
-
 #unary connective NOT
 class negation(logical):
 	
@@ -134,40 +122,3 @@ class biconditional(logical):
 			self.string = self.left_delimiter + self[0].show() + self.infix + self[1].show() + self.right_delimiter
 		else:
 			return "INVALID INPUT: expressions must be logical"
-
-#abstract connective between arbitray atoms?
-class predicate(logical):
-	
-	def __init__(self, *args):
-		if len(args) < 2:
-			return "INVALID INPUT: predicate must contain label and at least one expression"
-		if isinstance(args[0], str):
-			self.label = label
-		else:
-			return "INVALID INPUT: label must be string"
-		self.contents = []
-		for i in range(1, len(args)):
-			if isinstance(args[i], logical):
-				#should the predicate label be in contents?
-				self.contents.append(args[i])
-			else:
-				return "INVALID INPUT: expressions must be logical"
-		self.string = "temp"
-
-#expression containing bound variable of universal quality
-class forall(logical):
-	
-	def __init__(self, variable, expression1):
-		if isinstance(variable, arbitrary variable) and isinstance(expression1, logical):
-			self.contents = [variable, expression1]
-		else:
-			return "INVALID INPUT: variable must be arbitrary and expression must be logical"
-
-#expression containing bound variable of existential quality		
-class exists(logical):
-	
-	def __init__(self, variable, expression1):
-		if isinstance(variable, arbitrary variable) and isinstance(expression1, logical):
-			self.contents = [variable, expression1]
-		else:
-			return "INVALID INPUT: variable must be arbitrary and expression must be logical"
